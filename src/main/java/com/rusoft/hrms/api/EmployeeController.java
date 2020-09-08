@@ -3,6 +3,8 @@ package com.rusoft.hrms.api;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import com.rusoft.hrms.service.DepartmentService;
 import com.rusoft.hrms.service.EmployeeService;
@@ -10,7 +12,9 @@ import com.rusoft.hrms.model.Department;
 import com.rusoft.hrms.model.Employee;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -36,12 +40,29 @@ public class EmployeeController {
 	private DepartmentService departmentService;
 
 	@GetMapping
-	public List<Employee> getList() {
-		return employeeService.getList();
+	public Map<String, Object> getList() {
+		Map<String, Object> response = new HashMap<>();
+		response.put("employees", employeeService.getList());
+		return response;
 	}
 
 	@PostMapping("/save")
-	public Employee save(@Valid @RequestBody Employee employee) {
+	public Map<String, Object> save(@Valid @RequestBody Employee employee, BindingResult result) {
+		Map<String, Object> response = new HashMap<>();
+
+		String errorMsg = "";
+		if (result.hasErrors()) {
+			FieldError error = null;
+			for (Object obj : result.getAllErrors()) {
+				error = (FieldError) obj;
+				errorMsg += error.getDefaultMessage() + ". ";
+			}
+		}
+
+		if (errorMsg.length() != 0) {
+			response.put("error", errorMsg);
+			return response;
+		}
 
 		if (employee.getDepartments() != null && employee.getDepartments().size() > 0) {
 
@@ -60,14 +81,34 @@ public class EmployeeController {
 			employee.setRegisteredDate(new Date());
 		}
 
-		return employeeService.post(employee);
+		employee = employeeService.post(employee);
+		response.put("employee", employee);
+		return response;
 	}
 
 	@PutMapping("/save/{id}")
-	public String update(@Valid @RequestBody Employee employee, @PathVariable Integer id) {
+	public Map<String, Object> update(@Valid @RequestBody Employee employee, BindingResult result,
+			@PathVariable Integer id) {
+
+		Map<String, Object> response = new HashMap<>();
+
+		String errorMsg = "";
+		if (result.hasErrors()) {
+			FieldError error = null;
+			for (Object obj : result.getAllErrors()) {
+				error = (FieldError) obj;
+				errorMsg += error.getDefaultMessage() + ". ";
+			}
+		}
+
+		if (errorMsg.length() != 0) {
+			response.put("error", errorMsg);
+			return response;
+		}
 
 		if (!employeeService.get(id).isPresent()) {
-			return "Employee not found";
+			response.put("error", "Employee not found");
+			return response;
 		}
 
 		employee.setId(employeeService.get(id).get().getId());
@@ -85,29 +126,38 @@ public class EmployeeController {
 
 		}
 		employeeService.post(employee);
-		return "Employee updated";
+		response.put("success", "Employee updated");
+		return response;
 	}
 
 	@DeleteMapping("/delete/{id}")
-	public String delete(@PathVariable Integer id) {
+	public Map<String, Object> delete(@PathVariable Integer id) {
+
+		Map<String, Object> response = new HashMap<>();
 
 		if (!employeeService.get(id).isPresent()) {
-			return "Employee not found";
+			response.put("error", "Employee not found");
+			return response;
 		}
 
 		employeeService.delete(employeeService.get(id).get());
-		return "Employee deleted";
+		response.put("success", "Employee deleted");
+		return response;
 	}
 
 	@PostMapping("/image_upload/{id}")
-	public String singleFileUpload(@RequestParam("file") MultipartFile file, @PathVariable Integer id) {
+	public Map<String, Object> singleFileUpload(@RequestParam("file") MultipartFile file, @PathVariable Integer id) {
+
+		Map<String, Object> response = new HashMap<>();
 
 		if (file.isEmpty()) {
-			return "Select image";
+			response.put("error", "Select image");
+			return response;
 		}
 
 		if (!employeeService.get(id).isPresent()) {
-			return "Employee not found";
+			response.put("error", "Employee not found");
+			return response;
 		}
 
 		try {
@@ -124,7 +174,8 @@ public class EmployeeController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return "Image uploaded";
+		response.put("success", "Image uploaded");
+		return response;
 	}
 
 }

@@ -4,9 +4,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.rusoft.hrms.service.DepartmentService;
-import com.rusoft.hrms.model.Department;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @RequestMapping("api/v1/department")
 @RestController
@@ -16,8 +16,10 @@ public class DepartmentController {
 	private DepartmentService deparmentService;
 
 	@GetMapping
-	public List<Department> getList() {
-		return deparmentService.getList();
+	public Map<String, Object> getList() {
+		Map<String, Object> response = new HashMap<>();
+		response.put("departments", deparmentService.getList());
+		return response;
 	}
 
 }

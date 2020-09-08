@@ -14,10 +14,10 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotBlank(message = "First is mandatory")
+    @NotBlank(message = "First name is mandatory")
     private String firstName;
 
-    @NotBlank(message = "Last is mandatory")
+    @NotBlank(message = "Last name is mandatory")
     private String lastName;
 
     private String address;
