@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.rusoft.hrms.service.DepartmentService;
 import com.rusoft.hrms.service.EmployeeService;
@@ -18,8 +19,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
-
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;

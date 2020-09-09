@@ -18,6 +18,7 @@ public class Department {
     private Integer id;
     private String code;
     private String name;
+    private String phone;
 
     @ManyToMany(mappedBy = "departments")
     private List<Employee> employees = new ArrayList<>();
@@ -52,6 +53,14 @@ public class Department {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPhone() {
+        return this.phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
 }
