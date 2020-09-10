@@ -26,7 +26,7 @@ public class Employee {
     private Date registeredDate;
     private String image;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(name = "emp_dep", joinColumns = @JoinColumn(name = "employee_id"), inverseJoinColumns = @JoinColumn(name = "department_id"))
     private List<Department> departments = new ArrayList<>();
 
