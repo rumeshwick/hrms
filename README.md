@@ -54,7 +54,25 @@ This is a simple Rest API for a Human Resource Management System
     file - select file
 
     Response - {"success":"Image uploaded"}
+    
 
+  #### Enter work logs
+
+    URL(POST) - http://localhost:9090/api/v1/work_log/save
+
+    Request Body - {"hours":8,"employee":{"id":1},"date":"2020-09-12T09:57:27.946+00:00"}
+    
+    Response - {"Success":"Work log updated"}
+        
+
+  #### Generate Salary Slip
+
+    URL(POST) - http://localhost:9090/api/v1/salary_slip/generate
+
+    Request Body - {"employeeId":1,"month":"2020-09"}
+    
+    Response - {"Total Worked Hours ":16,"Salary Amount ":24000,"Employee Name ":"Json Holder","Bank Account No. ":"42344335435345","Bank Code ":"SMB","Period ":"From 2020-09-01 to 2020-09-30","Print Count ":1}
+ 
   ### Spring use bellow database configurations
 
 	spring.datasource.url=jdbc:h2:mem:hrmsdb
